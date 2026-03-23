@@ -1,12 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Plus, Minus, Send, ShoppingCart, X } from 'lucide-react'
 import { toast } from 'sonner'
 import { supabase } from '@/lib/supabase'
 import { formatCurrency } from '@/utils/formatCurrency'
 import { generateOrderCode } from '@/utils/generateOrderCode'
-import { StatusBadge } from '@/components/StatusBadge'
 
 // Menu data from requirements
 const menuData = [
@@ -148,39 +147,8 @@ export default function WaiterPage() {
   const [waiterName, setWaiterName] = useState('')
   const [selectedCategory, setSelectedCategory] = useState(categories[0])
   const [cart, setCart] = useState({})
-  const [activeOrders, setActiveOrders] = useState([])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showCartDrawer, setShowCartDrawer] = useState(false)
-
-  // Load active orders for this waiter
-  useEffect(() => {
-    fetchActiveOrders()
-    
-    // Subscribe to order changes
-    const channel = supabase
-      .channel('waiter-orders')
-      .on('postgres_changes', 
-        { event: '*', schema: 'public', table: 'orders' },
-        () => fetchActiveOrders()
-      )
-      .subscribe()
-      
-    return () => {
-      supabase.removeChannel(channel)
-    }
-  }, [waiterName])
-
-  const fetchActiveOrders = async () => {
-    const { data, error } = await supabase
-      .from('orders')
-      .select('*, order_items(*)')
-      .in('status', ['pending', 'preparing', 'ready'])
-      .order('created_at', { ascending: false })
-    
-    if (!error && data) {
-      setActiveOrders(data)
-    }
-  }
 
   const addToCart = (item) => {
     setCart(prev => ({
@@ -261,29 +229,11 @@ export default function WaiterPage() {
 
       toast.success(`Order ${orderCode} sent to kitchen!`)
       clearCart()
-      fetchActiveOrders()
     } catch (error) {
       console.error('Error submitting order:', error)
       toast.error('Failed to submit order. Please try again.')
     } finally {
       setIsSubmitting(false)
-    }
-  }
-
-  const cancelOrder = async (orderId) => {
-    try {
-      const { error } = await supabase
-        .from('orders')
-        .update({ status: 'cancelled' })
-        .eq('id', orderId)
-
-      if (error) throw error
-
-      toast.success('Order cancelled')
-      fetchActiveOrders()
-    } catch (error) {
-      console.error('Error cancelling order:', error)
-      toast.error('Failed to cancel order')
     }
   }
 
