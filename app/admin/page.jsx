@@ -28,6 +28,7 @@ export default function AdminPage() {
   const [session, setSession] = useState(null)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [isSignUp, setIsSignUp] = useState(false)
   const [activeTab, setActiveTab] = useState('dashboard')
   const [orders, setOrders] = useState([])
   const [orderItems, setOrderItems] = useState({})
@@ -142,6 +143,21 @@ export default function AdminPage() {
     }
   }
 
+  const handleSignUp = async (e) => {
+    e.preventDefault()
+    const { error } = await supabase.auth.signUp({
+      email,
+      password
+    })
+
+    if (error) {
+      toast.error(error.message)
+    } else {
+      toast.success('Account created! Please check your email to confirm.')
+      setIsSignUp(false)
+    }
+  }
+
   const handleLogout = async () => {
     await supabase.auth.signOut()
     toast.success('Logged out successfully')
@@ -229,11 +245,15 @@ export default function AdminPage() {
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <div className="bg-card border border-border rounded-lg p-8 max-w-md w-full">
           <div className="text-center mb-6">
-            <h1 className="text-2xl font-bold text-accent">Admin Login</h1>
-            <p className="text-muted mt-2">Sign in to access admin dashboard</p>
+            <h1 className="text-2xl font-bold text-accent">
+              {isSignUp ? 'Create Admin Account' : 'Admin Login'}
+            </h1>
+            <p className="text-muted mt-2">
+              {isSignUp ? 'Sign up to create admin account' : 'Sign in to access admin dashboard'}
+            </p>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={isSignUp ? handleSignUp : handleLogin} className="space-y-4">
             <div>
               <label className="block text-sm text-muted mb-1">Email</label>
               <input
@@ -258,9 +278,18 @@ export default function AdminPage() {
               type="submit"
               className="w-full py-3 bg-accent text-accent-foreground rounded-lg font-medium hover:bg-accent/80 transition-colors"
             >
-              Sign In
+              {isSignUp ? 'Sign Up' : 'Sign In'}
             </button>
           </form>
+
+          <div className="mt-4 text-center">
+            <button
+              onClick={() => setIsSignUp(!isSignUp)}
+              className="text-sm text-muted hover:text-accent transition-colors"
+            >
+              {isSignUp ? 'Already have an account? Sign In' : 'Need an account? Sign Up'}
+            </button>
+          </div>
         </div>
       </div>
     )
