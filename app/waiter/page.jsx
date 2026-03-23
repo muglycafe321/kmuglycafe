@@ -323,17 +323,17 @@ export default function WaiterPage() {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto p-4">
+      <div className="max-w-7xl mx-auto p-4 pb-24 lg:pb-4">
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Menu Section */}
           <div className="lg:col-span-2">
             {/* Category Tabs */}
-            <div className="flex gap-2 overflow-x-auto pb-4 mb-4 scrollbar-thin">
+            <div className="flex gap-2 overflow-x-auto pb-4 mb-4 scrollbar-thin sticky top-0 bg-background z-10 py-2">
               {categories.map(category => (
                 <button
                   key={category}
                   onClick={() => setSelectedCategory(category)}
-                  className={`px-4 py-2 rounded-lg whitespace-nowrap text-sm font-medium transition-colors ${
+                  className={`px-3 py-2 rounded-lg whitespace-nowrap text-xs sm:text-sm font-medium transition-colors ${
                     selectedCategory === category
                       ? 'bg-accent text-accent-foreground'
                       : 'bg-card border border-border text-foreground hover:border-accent'
@@ -345,34 +345,34 @@ export default function WaiterPage() {
             </div>
 
             {/* Menu Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
               {filteredItems.map(item => (
                 <div
                   key={item.name}
-                  className="bg-card border border-border rounded-lg p-3 hover:border-accent transition-colors"
+                  className="bg-card border border-border rounded-lg p-2 sm:p-3 hover:border-accent transition-colors active:scale-95"
                 >
-                  <h3 className="text-sm font-medium text-foreground mb-1">{item.name}</h3>
-                  <div className="flex items-center justify-between">
-                    <span className="text-accent font-bold">{formatCurrency(item.price)}</span>
+                  <h3 className="text-xs sm:text-sm font-medium text-foreground mb-1 leading-tight">{item.name}</h3>
+                  <div className="flex items-center justify-between mt-2">
+                    <span className="text-accent font-bold text-sm">{formatCurrency(item.price)}</span>
                     <div className="flex items-center gap-1">
                       {cart[item.name] && (
                         <>
                           <button
                             onClick={() => removeFromCart(item.name)}
-                            className="p-1 rounded bg-border/50 text-foreground hover:bg-border"
+                            className="p-1.5 sm:p-1 rounded bg-border/50 text-foreground hover:bg-border active:bg-border/80"
                           >
-                            <Minus size={14} />
+                            <Minus size={16} />
                           </button>
-                          <span className="w-6 text-center text-sm text-foreground">
+                          <span className="w-5 sm:w-6 text-center text-sm text-foreground font-medium">
                             {cart[item.name].quantity}
                           </span>
                         </>
                       )}
                       <button
                         onClick={() => addToCart(item)}
-                        className="p-1 rounded bg-accent text-accent-foreground hover:bg-accent/80"
+                        className="p-1.5 sm:p-1 rounded bg-accent text-accent-foreground hover:bg-accent/80 active:bg-accent/70"
                       >
-                        <Plus size={14} />
+                        <Plus size={16} />
                       </button>
                     </div>
                   </div>
@@ -381,25 +381,28 @@ export default function WaiterPage() {
             </div>
           </div>
 
-          {/* Cart Sidebar */}
+          {/* Cart Sidebar - Fixed on mobile, sticky on desktop */}
           <div className="lg:col-span-1">
-            <div className="bg-card border border-border rounded-lg sticky top-4">
-              <div className="p-4 border-b border-border">
+            <div className="bg-card border border-border rounded-lg lg:sticky lg:top-4 fixed bottom-0 left-0 right-0 lg:relative z-20 lg:z-auto max-h-[50vh] lg:max-h-none overflow-y-auto">
+              <div className="p-3 lg:p-4 border-b border-border">
                 <div className="flex items-center gap-2">
-                  <ShoppingCart className="text-accent" size={20} />
-                  <h2 className="text-lg font-semibold text-foreground">Order Cart</h2>
+                  <ShoppingCart className="text-accent" size={18} />
+                  <h2 className="text-base lg:text-lg font-semibold text-foreground">Order Cart</h2>
+                  {Object.keys(cart).length > 0 && (
+                    <span className="ml-auto text-accent font-bold">{formatCurrency(cartTotal)}</span>
+                  )}
                 </div>
               </div>
 
-              <div className="p-4 max-h-96 overflow-y-auto">
+              <div className="p-3 lg:p-4 max-h-32 lg:max-h-96 overflow-y-auto hidden lg:block">
                 {Object.keys(cart).length === 0 ? (
                   <p className="text-muted text-center py-8">Your cart is empty</p>
                 ) : (
                   <div className="space-y-3">
                     {Object.values(cart).map(item => (
                       <div key={item.name} className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <p className="text-sm text-foreground">{item.name}</p>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm text-foreground truncate">{item.name}</p>
                           <p className="text-xs text-muted">{formatCurrency(item.price)} x {item.quantity}</p>
                         </div>
                         <div className="flex items-center gap-2">
@@ -419,8 +422,27 @@ export default function WaiterPage() {
                 )}
               </div>
 
+              {/* Mobile cart summary - always visible */}
+              <div className="lg:hidden p-3 border-t border-border">
+                {Object.keys(cart).length > 0 ? (
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted">{Object.keys(cart).length} items</span>
+                    <button
+                      onClick={handleSubmit}
+                      disabled={isSubmitting}
+                      className="px-4 py-2 bg-accent text-accent-foreground rounded-lg font-medium flex items-center gap-2 hover:bg-accent/80 disabled:opacity-50 text-sm"
+                    >
+                      <Send size={16} />
+                      {isSubmitting ? 'Sending...' : 'Send Order'}
+                    </button>
+                  </div>
+                ) : (
+                  <p className="text-muted text-center text-sm">Tap items to add to cart</p>
+                )}
+              </div>
+
               {Object.keys(cart).length > 0 && (
-                <div className="p-4 border-t border-border">
+                <div className="hidden lg:block p-4 border-t border-border">
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-lg font-semibold text-foreground">Total</span>
                     <span className="text-xl font-bold text-accent">{formatCurrency(cartTotal)}</span>
