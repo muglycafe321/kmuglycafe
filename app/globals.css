@@ -3,21 +3,38 @@
 @tailwind utilities;
 
 :root {
-  --background: #0d1117;
-  --foreground: #e6edf3;
-  --card: #161b27;
-  --card-foreground: #e6edf3;
-  --border: #21262d;
-  --accent: #FFB800;
-  --accent-foreground: #0d1117;
-  --muted: #8b949e;
-  --muted-foreground: #6e7681;
+  --background: #0E0C09;
+  --foreground: #F9F3E8;
+  --card: #1A1710;
+  --card-foreground: #F9F3E8;
+  --border: #3A3020;
+  --accent: #C9963A;
+  --accent-foreground: #0E0C09;
+  --muted: #8A7A5A;
+  --muted-foreground: #6B5D4A;
+  /* Custom colors for Mugly Café */
+  --dark: #0E0C09;
+  --dark2: #1A1710;
+  --gold: #C9963A;
+  --gold-light: #E8B84B;
+  --cream: #F9F3E8;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-family: 'DM Sans', 'Segoe UI', system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Hide scrollbar but keep functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 
 @layer utilities {

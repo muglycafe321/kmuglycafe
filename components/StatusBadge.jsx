@@ -1,11 +1,11 @@
 'use client'
 
 const statusColors = {
-  pending: 'bg-pending/20 text-pending border-pending/30',
-  preparing: 'bg-preparing/20 text-preparing border-preparing/30',
-  ready: 'bg-ready/20 text-ready border-ready/30',
-  served: 'bg-served/20 text-served border-served/30',
-  cancelled: 'bg-cancelled/20 text-cancelled border-cancelled/30',
+  pending: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
+  preparing: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
+  ready: 'bg-green-500/20 text-green-400 border-green-500/30',
+  served: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
+  cancelled: 'bg-red-500/20 text-red-400 border-red-500/30',
 }
 
 const statusLabels = {

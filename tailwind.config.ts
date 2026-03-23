@@ -18,12 +18,12 @@ const config: Config = {
         "accent-foreground": "var(--accent-foreground)",
         muted: "var(--muted)",
         "muted-foreground": "var(--muted-foreground)",
-        // Status colors
-        pending: "#FF6B35",
-        preparing: "#FFB800",
-        ready: "#00C851",
-        served: "#4A90D9",
-        cancelled: "#FF4444",
+        // Custom Mugly Café colors
+        dark: "var(--dark)",
+        dark2: "var(--dark2)",
+        gold: "var(--gold)",
+        "gold-light": "var(--gold-light)",
+        cream: "var(--cream)",
       },
     },
   },
