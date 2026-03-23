@@ -129,8 +129,16 @@ export default function AdminPage() {
     setMenuItems(data || [])
   }
 
+  const ADMIN_EMAIL = 'muglycafe321@gmail.com'
+
   const handleLogin = async (e) => {
     e.preventDefault()
+    
+    if (email !== ADMIN_EMAIL) {
+      toast.error('Access denied. Only authorized admin can login.')
+      return
+    }
+    
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password
@@ -145,6 +153,12 @@ export default function AdminPage() {
 
   const handleSignUp = async (e) => {
     e.preventDefault()
+    
+    if (email !== ADMIN_EMAIL) {
+      toast.error('Only muglycafe321@gmail.com can create an admin account.')
+      return
+    }
+    
     const { error } = await supabase.auth.signUp({
       email,
       password
@@ -260,9 +274,10 @@ export default function AdminPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@muglycafe.com"
+                placeholder="muglycafe321@gmail.com"
                 className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder-muted focus:outline-none focus:border-accent"
               />
+              <p className="text-xs text-muted mt-1">Only muglycafe321@gmail.com is authorized</p>
             </div>
             <div>
               <label className="block text-sm text-muted mb-1">Password</label>
